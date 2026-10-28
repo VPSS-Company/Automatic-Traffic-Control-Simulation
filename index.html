@@ -23,8 +23,23 @@ button,input{font:inherit}button{cursor:pointer}.wrap{width:min(1420px,94%);marg
   .panel-title h3{font-size:.92rem}.sub{font-size:.72rem}.control-card{padding:11px}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
-        .site-footer {
+  .site-footer {
+  padding: 18px 12px 24px;
   text-align: center;
+  border-top: 1px solid var(--line);
+  color: #ffffff;
+  font-size: 0.8rem;
+}
+
+.site-footer a {
+  color: #ffffff;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.site-footer a:hover {
+  color: var(--cyan);
+  text-decoration: underline;
 }
 </style>
 </head>
