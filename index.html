@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b1220">
+<title>ATCS | Smart Traffic Simulator</title>
+<style>
+:root{--bg:#0b1220;--panel:#131e30;--panel2:#0e1727;--line:#26364d;--text:#edf4ff;--muted:#93a7c2;--cyan:#38bdf8;--green:#35d39a;--amber:#f6c453;--red:#ff647c}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#142744 0,transparent 42%),var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.5}
+button,input{font:inherit}button{cursor:pointer}.wrap{width:min(1420px,94%);margin:auto}.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 0;border-bottom:1px solid #25334a}.brand{display:flex;gap:12px;align-items:center}.brandmark{display:grid;place-items:center;width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,#38bdf8,#2563eb);font-size:23px;box-shadow:0 8px 28px #168bd533}.eyebrow{font-size:.72rem;color:var(--cyan);font-weight:800;letter-spacing:.15em;text-transform:uppercase}.brand h1{font-size:1.12rem;margin:1px 0 0}.status-pill{display:flex;align-items:center;gap:8px;border:1px solid #245642;background:#102b29;color:#72e8b8;padding:8px 12px;border-radius:99px;font-size:.78rem;font-weight:700}.dot{width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 12px currentColor}.hero{padding:30px 0 22px;display:flex;justify-content:space-between;align-items:end;gap:20px}.hero h2{font-size:clamp(1.7rem,4vw,2.7rem);line-height:1.1;letter-spacing:-.04em;margin:8px 0 10px}.hero p{color:var(--muted);max-width:720px;margin:0}.hero-actions{display:flex;gap:10px;flex-wrap:wrap}.btn{border:1px solid var(--line);border-radius:10px;padding:10px 14px;color:var(--text);background:#18253a;font-weight:700;transition:.2s}.btn:hover{transform:translateY(-1px);border-color:#4d729e}.btn.primary{background:linear-gradient(135deg,#0ea5e9,#2563eb);border:0}.btn:focus-visible{outline:3px solid #7dd3fc;outline-offset:2px}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin:8px 0 18px}.metric,.panel{background:linear-gradient(145deg,#17243a,#111b2c);border:1px solid var(--line);border-radius:16px;box-shadow:0 14px 35px #00000014}.metric{padding:16px 18px}.metric-head{display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:.8rem}.metric-icon{font-size:1.1rem}.metric strong{display:block;font-size:1.8rem;letter-spacing:-.04em;margin-top:7px}.metric small{color:var(--muted);font-size:.75rem}.layout{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(310px,.9fr);gap:16px;align-items:stretch}.panel{padding:18px;min-width:0}.panel-title{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.panel-title h3{font-size:1rem;margin:0}.sub{color:var(--muted);font-size:.78rem}.live-label{display:flex;align-items:center;gap:7px;color:#71e8b7;font-size:.75rem;font-weight:800}.intersection{height:390px;position:relative;overflow:hidden;border-radius:13px;border:1px solid #31435a;background:#142235;isolation:isolate}
+.intersection:before,.intersection:after{content:"";position:absolute;background:#29384b;z-index:-2}.intersection:before{width:100%;height:112px;top:50%;left:0;transform:translateY(-50%);border-top:2px solid #526176;border-bottom:2px solid #526176}.intersection:after{height:100%;width:112px;left:50%;top:0;transform:translateX(-50%);border-left:2px solid #526176;border-right:2px solid #526176}.road-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:112px;height:112px;background:#29384b;z-index:-1}.lane-line{position:absolute;z-index:-1;border-color:#b6c2d044;border-style:dashed}.lane-line.h{left:0;right:0;top:50%;border-top-width:2px}.lane-line.v{top:0;bottom:0;left:50%;border-left-width:2px}.crosswalk{position:absolute;width:78px;height:16px;z-index:1;opacity:.55;background:repeating-linear-gradient(90deg,#dce7f5 0 5px,transparent 5px 10px)}.cw1{left:calc(50% - 39px);top:calc(50% - 75px)}.cw2{left:calc(50% - 39px);top:calc(50% + 59px)}.cw3{top:calc(50% - 39px);left:calc(50% - 75px);transform:rotate(90deg)}.cw4{top:calc(50% - 39px);left:calc(50% + 59px);transform:rotate(90deg)}.lane-label{position:absolute;font-size:.72rem;font-weight:800;letter-spacing:.06em;color:#c6d6ea;background:#17253a;border:1px solid #40536b;border-radius:8px;padding:5px 8px;z-index:2}.north{top:10px;left:50%;transform:translateX(-50%)}.south{bottom:10px;left:50%;transform:translateX(-50%)}.west{left:10px;top:50%;transform:translateY(-50%)}.east{right:10px;top:50%;transform:translateY(-50%)}.signal{position:absolute;z-index:5;display:flex;gap:4px;padding:5px;background:#07101d;border:1px solid #44556a;border-radius:9px;box-shadow:0 4px 12px #0006}.signal span{width:10px;height:10px;border-radius:50%;background:#344255}.signal .red.on{background:var(--red);box-shadow:0 0 10px #ff647c88}.signal .yellow.on{background:var(--amber);box-shadow:0 0 10px #f6c45388}.signal .green.on{background:var(--green);box-shadow:0 0 10px #35d39a88}.sig-n{top:calc(50% - 105px);left:calc(50% + 12px)}.sig-s{bottom:calc(50% - 105px);right:calc(50% + 12px)}.sig-w{left:calc(50% - 105px);bottom:calc(50% + 12px)}.sig-e{right:calc(50% - 105px);top:calc(50% + 12px)}.cars{position:absolute;inset:0;z-index:3;pointer-events:none}.car{position:absolute;width:13px;height:22px;border-radius:4px;border:1px solid #ffffff55;box-shadow:0 2px 4px #0005;transition:all .65s ease}.car:after{content:"";position:absolute;top:3px;left:3px;right:3px;height:4px;border-radius:2px;background:#dbeafe88}.car.n{transform:rotate(180deg)}.car.s{transform:rotate(0)}.car.e{transform:rotate(270deg)}.car.w{transform:rotate(90deg)}.intersection-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap}.legend{display:flex;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:.75rem}.legend span{display:flex;align-items:center;gap:6px}.legend i{width:7px;height:7px;border-radius:50%;display:inline-block}.controls{display:grid;gap:14px}.control-card{padding:14px;border:1px solid #293a52;border-radius:12px;background:#0e1829}.control-head{display:flex;justify-content:space-between;align-items:center;gap:10px}.control-head strong{font-size:.9rem}.tag{font-size:.68rem;font-weight:800;color:var(--cyan);background:#12334a;border:1px solid #22516b;padding:4px 7px;border-radius:6px}.lane-control{margin-top:12px}.lane-row{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:.8rem;margin-bottom:7px}.lane-row span{color:var(--muted)}input[type=range]{width:100%;accent-color:var(--cyan)}.lane-stats{display:flex;justify-content:space-between;color:var(--muted);font-size:.72rem}.priority-list{display:grid;gap:9px;margin-top:12px}.priority-row{display:grid;grid-template-columns:24px 1fr 42px;gap:8px;align-items:center;font-size:.78rem}.priority-row .rank{width:23px;height:23px;border-radius:7px;background:#1b3850;color:#7dd3fc;display:grid;place-items:center;font-weight:800}.bar{height:7px;background:#27374d;border-radius:99px;overflow:hidden;margin-top:4px}.bar i{height:100%;display:block;background:linear-gradient(90deg,#0ea5e9,#35d39a);border-radius:99px;transition:width .4s}.priority-row b{text-align:right;font-size:.78rem}.cycle-display{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.cycle-box{background:#111e30;border:1px solid #293a52;border-radius:10px;padding:10px}.cycle-box span{display:block;color:var(--muted);font-size:.72rem}.cycle-box strong{font-size:1.15rem}.bottom-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:16px;margin:16px 0 30px}.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.step{padding:13px;border-radius:11px;background:#0e1829;border:1px solid #293a52}.step b{display:block;font-size:.83rem;margin:7px 0 4px}.step p{margin:0;color:var(--muted);font-size:.75rem}.step-icon{font-size:1.2rem}.log{display:grid;gap:9px}.log-item{display:flex;gap:10px;align-items:start;font-size:.8rem;color:#d5e1f1}.log-item time{font-size:.7rem;color:var(--muted);white-space:nowrap;padding-top:2px}.log-dot{margin-top:6px;width:7px;height:7px;flex:0 0 auto;border-radius:50%;background:var(--green)}.disclaimer{color:#91a4bc;font-size:.75rem;padding:0 0 24px}.toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#17362f;border:1px solid #2d8064;color:#b8ffe0;padding:10px 15px;border-radius:10px;transition:.25s;z-index:10}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}.bottom-grid{grid-template-columns:1fr}.intersection{height:360px}.hero{align-items:start;flex-direction:column}.hero-actions{width:100%}}
+@media(max-width:520px){.wrap{width:94%}.topbar{align-items:flex-start;flex-wrap:wrap}.brand{min-width:0}.brand h1{overflow-wrap:anywhere}.topbar .status-pill{margin-left:56px}.topbar{padding:16px 0}.hero h2{font-size:clamp(1.65rem,8vw,2.25rem)}.status-pill{font-size:.68rem;padding:7px 9px}.brand h1{font-size:.98rem}.hero{padding-top:24px}.panel{padding:13px}.metric{padding:12px}.metric strong{font-size:1.5rem}.intersection{height:320px}.intersection:before{height:92px}.intersection:after{width:92px}.road-center{width:92px;height:92px}.sig-n{top:calc(50% - 85px);left:calc(50% + 8px)}.sig-s{bottom:calc(50% - 85px);right:calc(50% + 8px)}.sig-w{left:calc(50% - 85px);bottom:calc(50% + 8px)}.sig-e{right:calc(50% - 85px);top:calc(50% + 8px)}.crosswalk{width:58px}.cw1{left:calc(50% - 29px);top:calc(50% - 61px)}.cw2{left:calc(50% - 29px);top:calc(50% + 45px)}.cw3{top:calc(50% - 29px);left:calc(50% - 61px)}.cw4{top:calc(50% - 29px);left:calc(50% + 45px)}.lane-label{font-size:.62rem;padding:4px 6px}.west{left:5px}.east{right:5px}.north{top:5px}.south{bottom:5px}.steps{grid-template-columns:1fr}.hero-actions .btn{flex:1}.panel-title{align-items:flex-start}.intersection-foot{align-items:flex-start}.legend{gap:8px}}
+@media(max-width:380px){
+  .metrics{gap:8px}.metric{padding:10px}.metric-head{font-size:.72rem}.metric strong{font-size:1.32rem}
+  .intersection{height:285px}.intersection:before{height:82px}.intersection:after{width:82px}.road-center{width:82px;height:82px}
+  .sig-n{top:calc(50% - 77px);left:calc(50% + 5px)}.sig-s{bottom:calc(50% - 77px);right:calc(50% + 5px)}
+  .sig-w{left:calc(50% - 77px);bottom:calc(50% + 5px)}.sig-e{right:calc(50% - 77px);top:calc(50% + 5px)}
+  .car{width:10px;height:17px}.lane-label{font-size:.57rem;padding:3px 5px}
+  .panel-title h3{font-size:.92rem}.sub{font-size:.72rem}.control-card{padding:11px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="topbar">
+  <div class="brand"><div class="brandmark">🚦</div><div><div class="eyebrow"></div><h1>Automatic Traffic Control System <span style="color:var(--muted);font-weight:500"></span></h1></div></div>
+  <div class="status-pill"><span class="dot"></span> SIMULATION ONLINE</div>
+</header>
+<section class="hero">
+  <div><div class="eyebrow">Adaptive Traffic Control System</div><h2>A simple demo of<br>smarter traffic lights.</h2><p>I built this interactive demo to show how traffic lights could respond to the number of vehicles waiting on each road. Change the lane counts and watch the system choose a direction for the green light.</p></div>
+  <div class="hero-actions"><button class="btn primary" id="toggleBtn">Ⅱ Pause simulation</button><button class="btn" id="resetBtn">↻ Reset demo</button></div>
+</section>
+<section class="metrics" aria-label="Simulation metrics">
+  <article class="metric"><div class="metric-head">Vehicles waiting <span class="metric-icon">🚗</span></div><strong id="totalVehicles">24</strong><small>Across all four approaches</small></article>
+  <article class="metric"><div class="metric-head">Active green lane <span class="metric-icon">🟢</span></div><strong id="activeLane">North</strong><small id="greenSub">Signal phase in progress</small></article>
+  <article class="metric"><div class="metric-head">Green time <span class="metric-icon">⏱️</span></div><strong><span id="greenTime">18</span><small> sec</small></strong><small>Adaptive duration estimate</small></article>
+  <article class="metric"><div class="metric-head">Vehicles released <span class="metric-icon">↗</span></div><strong id="released">0</strong><small>In this simulation session</small></article>
+</section>
+<section class="layout">
+  <article class="panel">
+    <div class="panel-title"><div><h3>Live intersection</h3><div class="sub">Four-way junction · Top-down view</div></div><div class="live-label"><span class="dot"></span><span id="simState">RUNNING</span></div></div>
+    <div class="intersection" id="intersection" role="img" aria-label="Animated four-way road intersection showing simulated traffic lights and vehicles">
+      <div class="road-center"></div><div class="lane-line h"></div><div class="lane-line v"></div>
+      <div class="crosswalk cw1"></div><div class="crosswalk cw2"></div><div class="crosswalk cw3"></div><div class="crosswalk cw4"></div>
+      <div class="lane-label north">NORTH</div><div class="lane-label south">SOUTH</div><div class="lane-label west">WEST</div><div class="lane-label east">EAST</div>
+      <div class="signal sig-n" data-signal="N"><span class="red"></span><span class="yellow"></span><span class="green"></span></div>
+      <div class="signal sig-s" data-signal="S"><span class="red"></span><span class="yellow"></span><span class="green"></span></div>
+      <div class="signal sig-w" data-signal="W"><span class="red"></span><span class="yellow"></span><span class="green"></span></div>
+      <div class="signal sig-e" data-signal="E"><span class="red"></span><span class="yellow"></span><span class="green"></span></div>
+      <div class="cars" id="cars"></div>
+    </div>
+    <div class="intersection-foot"><div class="legend"><span><i style="background:var(--red)"></i>Stop</span><span><i style="background:var(--amber)"></i>Transition</span><span><i style="background:var(--green)"></i>Go</span></div><div class="sub" id="phaseText">North–South phase · adaptive timing</div></div>
+  </article>
+  <aside class="panel">
+    <div class="panel-title"><div><h3>Traffic controls</h3><div class="sub">Change how many vehicles are waiting</div></div><span class="tag">DEMO INPUTS</span></div>
+    <div class="controls">
+      <div class="control-card"><div class="control-head"><strong>Lane demand</strong><span class="tag">0–20 vehicles</span></div>
+        <div id="laneControls"></div>
+      </div>
+      <div class="control-card"><div class="control-head"><strong>Priority score</strong><span class="tag">LIVE RANKING</span></div><div class="sub" style="margin-top:5px">Roads with more waiting vehicles get a higher score in this demo.</div><div class="priority-list" id="priorityList"></div></div>
+      <div class="control-card"><div class="control-head"><strong>Signal timing</strong><span class="tag">ADAPTIVE</span></div><div class="cycle-display"><div class="cycle-box"><span>Selected phase</span><strong id="phaseLane">North</strong></div><div class="cycle-box"><span>Next switch in</span><strong id="countdown">18 s</strong></div></div><div class="sub" style="margin-top:10px">The green-light time changes with the queue size (between 8 and 30 seconds in this demo).</div></div>
+    </div>
+  </aside>
+</section>
+<section class="bottom-grid">
+  <article class="panel"><div class="panel-title"><div><h3>How the demo works</h3><div class="sub">The main idea behind my Science Day project</div></div></div><div class="steps">
+    <div class="step"><div class="step-icon">📡</div><b>1. Check the queues</b><p>The lane sliders stand in for sensors that count the vehicles waiting on each road.</p></div>
+    <div class="step"><div class="step-icon">🧠</div><b>2. Pick a road</b><p>The demo compares the queue scores and gives the green light to the road with the highest priority.</p></div>
+    <div class="step"><div class="step-icon">🚘</div><b>3. Let traffic move</b><p>Some vehicles leave the selected queue. The system then checks the queues again for the next turn.</p></div>
+  </div></article>
+  <article class="panel"><div class="panel-title"><div><h3>System event log</h3><div class="sub">Recent simulation activity</div></div><span class="tag">LOCAL</span></div><div class="log" id="eventLog" aria-live="polite"></div></article>
+</section>
+<p class="disclaimer"><strong>Important note:</strong> This is a browser-based school project demo, not a real traffic controller. The vehicle counts are changed with sliders; no real IoT sensors or Raspberry Pi are connected. The 15–25% reduction mentioned on the poster has not been measured by this simulation. A real system would need proper sensors, pedestrian signals, safety checks and testing before it could be used on roads.</p>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+(() => {
+  const names={N:'North',S:'South',E:'East',W:'West'};
+  const colors=['#38bdf8','#f6c453','#a78bfa','#fb7185','#35d39a','#f97316'];
+  const initial={N:8,S:6,E:4,W:6};
+  let queues={...initial}, active='N', phaseSeconds=18, remaining=18, released=0, paused=false, lastTick=Date.now(), cars=[];
+  const $=id=>document.getElementById(id);
+  const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
+  const score=k=>queues[k]*5 + (queues[k]>=12?8:0);
+  const greenDuration=k=>clamp(8+Math.round(queues[k]*1.1),8,30);
+  function buildControls(){
+    $('laneControls').innerHTML=Object.keys(names).map(k=>`<div class="lane-control"><div class="lane-row"><strong>${names[k]} approach</strong><span><b id="val-${k}">${queues[k]}</b> vehicles</span></div><input type="range" min="0" max="20" value="${queues[k]}" id="range-${k}" aria-label="${names[k]} lane vehicle count"><div class="lane-stats"><span>Low demand</span><span>High demand</span></div></div>`).join('');
+    Object.keys(names).forEach(k=>$('range-'+k).addEventListener('input',e=>{
+      queues[k]=Number(e.target.value);
+      $('val-'+k).textContent=queues[k];
+      const best=Object.keys(names).sort((a,b)=>score(b)-score(a))[0];
+      // Demo mode: immediately adapt when live demand changes, rather than waiting for the timer.
+      if(best!==active && queues[best]>0 && score(best)>score(active)){
+        active=best;
+        phaseSeconds=greenDuration(active);
+        remaining=phaseSeconds;
+        lastTick=Date.now();
+        addLog(`Immediate adaptation: ${names[active]} selected after demand changed (score ${score(active)}).`);
+      } else {
+        // If the active lane's queue changes, update its planned green time and countdown immediately.
+        const updated=greenDuration(active);
+        const elapsed=Math.max(0,phaseSeconds-remaining);
+        phaseSeconds=updated;
+        remaining=clamp(updated-elapsed,1,updated);
+      }
+      render();
+      addLog(`${names[k]} sensor estimate updated to ${queues[k]} vehicles.`);
+    }));
+  }
+  function buildCars(){
+    $('cars').innerHTML='';cars=[];
+    Object.keys(names).forEach(k=>{
+      for(let i=0;i<queues[k];i++){
+        const el=document.createElement('div');el.className='car '+k.toLowerCase();el.style.background=colors[(i+(k==='S'?1:k==='E'?2:k==='W'?3:0))%colors.length];$('cars').appendChild(el);
+        cars.push({el,lane:k,index:i});
+      }
+    });positionCars();
+  }
+  function positionCars(){
+    const box=$('intersection').getBoundingClientRect(), mobile=box.width<520;
+    const centerX=box.width/2, centerY=box.height/2, road=mobile?92:112;
+    cars.forEach(c=>{
+      const {lane:k,index:i,el}=c; const count=queues[k]; if(i>=count){el.style.display='none';return;}el.style.display='block';
+      const gap=24, offset= Math.floor(i/2)*gap+15, side=(i%2)*17;
+      if(k==='N'){el.style.left=(centerX-road/2+9+side)+'px';el.style.top=(Math.max(10,centerY-road/2-offset-15))+'px';}
+      if(k==='S'){el.style.left=(centerX+road/2-23-side)+'px';el.style.top=(Math.min(box.height-34,centerY+road/2+offset-10))+'px';}
+      if(k==='W'){el.style.left=(Math.max(10,centerX-road/2-offset-15))+'px';el.style.top=(centerY+road/2-23-side)+'px';}
+      if(k==='E'){el.style.left=(Math.min(box.width-25,centerX+road/2+offset-10))+'px';el.style.top=(centerY-road/2+9+side)+'px';}
+      if(k===active && !paused && remaining<phaseSeconds-2 && i<Math.max(0,queues[k]-Math.max(1,Math.floor((phaseSeconds-remaining)/3)))){el.style.opacity='.18';}else el.style.opacity='1';
+    });
+  }
+  function renderSignals(){
+    document.querySelectorAll('.signal').forEach(sig=>{
+      const k=sig.dataset.signal;const light=sig.querySelectorAll('span');
+      light.forEach(el=>el.classList.remove('on'));
+      if(k===active)light[2].classList.add('on');else light[0].classList.add('on');
+    });
+    $('activeLane').textContent=names[active];$('phaseLane').textContent=names[active];$('greenTime').textContent=phaseSeconds;$('countdown').textContent=remaining+' s';$('greenSub').textContent='Signal phase in progress';$('phaseText').textContent=names[active]+' approach green · others stop';
+  }
+  function renderPriority(){
+    const sorted=Object.keys(names).sort((a,b)=>score(b)-score(a));
+    $('priorityList').innerHTML=sorted.map((k,i)=>`<div class="priority-row"><span class="rank">${i+1}</span><div><div>${names[k]} approach</div><div class="bar"><i style="width:${Math.max(3,score(k)/Math.max(1,Math.max(...Object.keys(names).map(score)))*100)}%"></i></div></div><b>${score(k)}</b></div>`).join('');
+  }
+  function render(){
+    $('totalVehicles').textContent=Object.values(queues).reduce((a,b)=>a+b,0);$('released').textContent=released;
+    renderSignals();renderPriority();buildCars();
+    Object.keys(names).forEach(k=>{const input=$('range-'+k);if(input&&Number(input.value)!==queues[k])input.value=queues[k];if($('val-'+k))$('val-'+k).textContent=queues[k]});
+  }
+  function addLog(msg){
+    const d=new Date();const stamp=d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    const item=document.createElement('div');item.className='log-item';item.innerHTML=`<span class="log-dot"></span><time>${stamp}</time><span></span>`;item.lastElementChild.textContent=msg;
+    $('eventLog').prepend(item);while($('eventLog').children.length>5)$('eventLog').lastElementChild.remove();
+  }
+  function nextLane(){
+    const sorted=Object.keys(names).sort((a,b)=>score(b)-score(a));
+    // Avoid repeatedly selecting the same approach when another approach has waiting demand.
+    active=sorted.find(k=>k!==active && queues[k]>0) || sorted.find(k=>queues[k]>0) || Object.keys(names).find(k=>k!==active) || 'N';
+    phaseSeconds=greenDuration(active);remaining=phaseSeconds;
+    addLog(`${names[active]} selected for green; queue score ${score(active)}, planned green ${phaseSeconds}s.`);
+    render();
+  }
+  function tick(){
+    if(paused)return;
+    const now=Date.now();if(now-lastTick<1000)return;lastTick=now;
+    remaining--;
+    if(remaining<=0){
+      const served=Math.min(queues[active],Math.max(1,Math.round(phaseSeconds/5)));
+      queues[active]=Math.max(0,queues[active]-served);released+=served;
+      // Light arrivals keep the demo active; this is a simulated input, not a sensor reading.
+      Object.keys(names).forEach(k=>{if(Math.random()<.34)queues[k]=Math.min(20,queues[k]+1)});
+      nextLane();
+    } else {renderSignals();positionCars();}
+  }
+  $('toggleBtn').addEventListener('click',()=>{
+    paused=!paused;$('toggleBtn').textContent=paused?'▶ Resume simulation':'Ⅱ Pause simulation';$('simState').textContent=paused?'PAUSED':'RUNNING';
+    if(!paused)lastTick=Date.now();$('toast').textContent=paused?'Simulation paused.':'Simulation resumed.';$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),1600);
+  });
+  $('resetBtn').addEventListener('click',()=>{
+    queues={...initial};active='N';phaseSeconds=greenDuration(active);remaining=phaseSeconds;released=0;paused=false;lastTick=Date.now();
+    $('toggleBtn').textContent='Ⅱ Pause simulation';$('simState').textContent='RUNNING';buildControls();render();$('eventLog').innerHTML='';addLog('Demo reset to initial lane demand.');addLog('North approach selected for initial green phase.');
+  });
+  buildControls();render();addLog('Traffic simulation started.');addLog('North approach selected for initial green phase.');
+  setInterval(tick,180);window.addEventListener('resize',positionCars);
+})();
+</script>
+</body>
+</html>
